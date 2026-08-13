@@ -2,6 +2,11 @@
   const year = document.getElementById("year");
   if (year) year.textContent = String(new Date().getFullYear());
 
+  const formSuccess = document.getElementById("form-success");
+  if (formSuccess && new URLSearchParams(window.location.search).get("success") === "1") {
+    formSuccess.hidden = false;
+  }
+
   const header = document.querySelector(".site-header");
   const toggle = document.querySelector(".nav-toggle");
   const panel = document.getElementById("mobile-panel");
@@ -138,6 +143,7 @@
 
     markReveal(document.querySelector(".why-copy"), "reveal-left");
     markReveal(document.querySelector(".why-visual"), "reveal-right", 100);
+    markReveal(document.querySelector(".trust-panel"), "reveal-right", 160);
 
     document.querySelectorAll(".review-tile").forEach((el, i) => {
       markReveal(el, "reveal-scale", (i % 2) * 90);

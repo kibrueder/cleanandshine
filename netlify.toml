@@ -2,19 +2,59 @@
   publish = "."
   command = "echo 'Static site – no build step'"
 
+[build.processing]
+  skip_processing = false
+
 [[headers]]
   for = "/*"
   [headers.values]
     X-Frame-Options = "DENY"
     X-Content-Type-Options = "nosniff"
     Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "camera=(), microphone=(), geolocation=()"
 
 [[headers]]
   for = "/css/*"
   [headers.values]
-    Cache-Control = "public, max-age=31536000, immutable"
+    Cache-Control = "public, max-age=3600, must-revalidate"
 
 [[headers]]
   for = "/js/*"
   [headers.values]
+    Cache-Control = "public, max-age=3600, must-revalidate"
+
+[[headers]]
+  for = "/fonts/*"
+  [headers.values]
     Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=604800"
+
+# Old WordPress / pretty paths
+[[redirects]]
+  from = "/datenschutzerklarung"
+  to = "/datenschutz"
+  status = 301
+
+[[redirects]]
+  from = "/datenschutzerklarung/"
+  to = "/datenschutz"
+  status = 301
+
+[[redirects]]
+  from = "/blog/professionelle-gebaeudereinigung-in-rheine-clean-shine-stellt-sich-vor"
+  to = "/blog-professionelle-gebaeudereinigung-rheine.html"
+  status = 200
+
+[[redirects]]
+  from = "/blog/professionelle-gebaeudereinigung-in-rheine-clean-shine-stellt-sich-vor/"
+  to = "/blog-professionelle-gebaeudereinigung-rheine.html"
+  status = 200
+
+[[redirects]]
+  from = "/*"
+  to = "/404.html"
+  status = 404
