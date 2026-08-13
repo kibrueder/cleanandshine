@@ -236,32 +236,60 @@ address {
   margin-left: auto;
   display: flex;
   align-items: center;
-  gap: 1rem;
+  justify-content: flex-end;
+  gap: 1.15rem;
+  min-width: 0;
+  flex: 1 1 auto;
 }
 
 .site-nav {
   margin-left: 0;
+  min-width: 0;
+  flex: 1 1 auto;
 }
 
 .site-nav > ul {
   display: flex;
   align-items: center;
-  gap: 0.15rem;
+  justify-content: flex-start;
+  flex-wrap: nowrap;
+  gap: 0.1rem;
 }
 
-.site-nav a {
+.site-nav > ul > li > a {
+  white-space: nowrap;
+}
+
+.site-nav a,
+.nav-more-btn {
   color: rgba(255, 255, 255, 0.86);
   font-size: 0.88rem;
   font-weight: 600;
-  padding: 0.4rem 0.55rem;
+  padding: 0.4rem 0.5rem;
   border-radius: 6px;
   transition: color 0.2s ease, background 0.2s ease;
 }
 
+.nav-more-btn {
+  border: 0;
+  background: transparent;
+  font: inherit;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
 .site-nav a:hover,
-.site-nav a.is-active {
+.site-nav a.is-active,
+.nav-more-btn:hover,
+.nav-more-btn.is-active,
+.nav-more-btn[aria-expanded="true"] {
   color: var(--white);
   background: rgba(255, 255, 255, 0.08);
+}
+
+.nav-more .dropdown {
+  left: auto;
+  right: 0;
 }
 
 .has-dropdown {
@@ -284,7 +312,8 @@ address {
 }
 
 .has-dropdown:hover .dropdown,
-.has-dropdown:focus-within .dropdown {
+.has-dropdown:focus-within .dropdown,
+.has-dropdown.is-open .dropdown {
   opacity: 1;
   visibility: visible;
   transform: translateY(0);
@@ -1330,6 +1359,43 @@ a.map-placeholder:hover {
   color: rgba(255, 255, 255, 0.55);
 }
 
+.whatsapp-float {
+  position: fixed;
+  right: 1.25rem;
+  bottom: 1.25rem;
+  z-index: 90;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: #25d366;
+  color: var(--white);
+  display: grid;
+  place-items: center;
+  box-shadow: 0 12px 28px rgba(20, 140, 70, 0.38);
+  transition: transform 0.2s var(--ease), background 0.2s ease;
+}
+
+.whatsapp-float svg {
+  width: 28px;
+  height: 28px;
+}
+
+.whatsapp-float:hover,
+.whatsapp-float:focus-visible {
+  color: var(--white);
+  background: #1ebe57;
+  transform: translateY(-2px);
+}
+
+@media (max-width: 860px) {
+  .whatsapp-float {
+    right: 1rem;
+    bottom: 1rem;
+    width: 52px;
+    height: 52px;
+  }
+}
+
 /* Responsive */
 @media (max-width: 1200px) {
   .why-grid {
@@ -1390,9 +1456,14 @@ a.map-placeholder:hover {
     display: block;
   }
 
+  .nav-more {
+    display: none !important;
+  }
+
   .mobile-panel {
     display: none;
     margin-left: 0;
+    flex: none;
   }
 
   .mobile-panel.is-open {

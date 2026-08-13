@@ -43,6 +43,95 @@
     });
   }
 
+  const overflowNav = document.querySelector("[data-overflow-nav]");
+  if (overflowNav) {
+    const list = overflowNav.querySelector(":scope > ul");
+    const more = overflowNav.querySelector(".nav-more");
+    const moreMenu = more?.querySelector(".dropdown");
+    const moreBtn = more?.querySelector(".nav-more-btn");
+    const items = list ? [...list.children].filter((li) => !li.classList.contains("nav-more")) : [];
+    const mobileQuery = window.matchMedia("(max-width: 860px)");
+    let frame = 0;
+
+    const closeMore = () => {
+      if (!more || !moreBtn) return;
+      more.classList.remove("is-open");
+      moreBtn.setAttribute("aria-expanded", "false");
+    };
+
+    const resetItems = () => {
+      if (!list || !more || !moreMenu) return;
+      items.forEach((item) => list.insertBefore(item, more));
+      moreMenu.replaceChildren();
+      more.hidden = true;
+      moreBtn?.classList.remove("is-active");
+      closeMore();
+    };
+
+    const layoutNav = () => {
+      if (!list || !more || !moreMenu || !moreBtn) return;
+      resetItems();
+      if (mobileQuery.matches) return;
+
+      const available = overflowNav.clientWidth;
+      const gap = parseFloat(getComputedStyle(list).columnGap || getComputedStyle(list).gap) || 0;
+      const widths = items.map((item) => item.offsetWidth);
+      let used = widths.reduce((sum, width, index) => sum + width + (index ? gap : 0), 0);
+
+      if (used <= available) return;
+
+      more.hidden = false;
+      const moreWidth = more.offsetWidth + gap;
+      const overflow = [];
+
+      for (let i = items.length - 1; i >= 3 && used + moreWidth > available; i -= 1) {
+        used -= widths[i] + gap;
+        overflow.unshift(items[i]);
+      }
+
+      if (!overflow.length) {
+        more.hidden = true;
+        return;
+      }
+
+      overflow.forEach((item) => moreMenu.appendChild(item));
+      if (overflow.some((item) => item.querySelector("a.is-active"))) {
+        moreBtn.classList.add("is-active");
+      }
+    };
+
+    const scheduleLayout = () => {
+      cancelAnimationFrame(frame);
+      frame = requestAnimationFrame(layoutNav);
+    };
+
+    moreBtn?.addEventListener("click", (event) => {
+      event.stopPropagation();
+      const open = moreBtn.getAttribute("aria-expanded") === "true";
+      moreBtn.setAttribute("aria-expanded", String(!open));
+      more?.classList.toggle("is-open", !open);
+    });
+
+    document.addEventListener("click", (event) => {
+      if (more && !more.contains(event.target)) closeMore();
+    });
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape") closeMore();
+    });
+
+    const headerInner = document.querySelector(".header-inner");
+    if (typeof ResizeObserver === "function" && headerInner) {
+      new ResizeObserver(scheduleLayout).observe(headerInner);
+    } else {
+      window.addEventListener("resize", scheduleLayout);
+    }
+
+    mobileQuery.addEventListener("change", scheduleLayout);
+    if (document.fonts?.ready) document.fonts.ready.then(scheduleLayout);
+    scheduleLayout();
+  }
+
   if (header) {
     const onScroll = () => {
       header.style.boxShadow = window.scrollY > 8
