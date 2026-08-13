@@ -142,8 +142,6 @@
     });
 
     markReveal(document.querySelector(".why-copy"), "reveal-left");
-    markReveal(document.querySelector(".why-visual"), "reveal-right", 100);
-    markReveal(document.querySelector(".trust-panel"), "reveal-right", 160);
 
     document.querySelectorAll(".review-tile").forEach((el, i) => {
       markReveal(el, "reveal-scale", (i % 2) * 90);
